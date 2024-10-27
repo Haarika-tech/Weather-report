@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html ng-app="weatherApp">
+<head>
+    <title>Weather Report</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+    <script src="app.js"></script>
+</head>
+<body ng-controller="WeatherController">
+
+    <h1>Weather Report</h1>
+    <input type="text" ng-model="city" placeholder="Enter city name" />
+    <button ng-click="getWeather()">Get Weather</button>
+
+    <div ng-if="weather">
+        <h2>Weather in {{ weather.name }}</h2>
+        <p>Temperature: {{ weather.main.temp }}°C</p>
+        <p>Humidity: {{ weather.main.humidity }}%</p>
+        <p>Weather: {{ weather.weather[0].description }}</p>
+    </div>
+
+</body>
+</html>var app = angular.module('weatherApp', []);
+
+app.controller('WeatherController', ['$scope', '$http', function($scope, $http) {
+    $scope.city = "New York"; // default city
+    
+    $scope.getWeather = function() {
+        const apiKey = 'YOUR_API_KEY';
+        const url = `https://api.openweathermap.org/data/2.5/weather?q=${$scope.city}&appid=${apiKey}&units=metric`;
+
+        $http.get(url)
+            .then(function(response) {
+                $scope.weather = response.data;
+            })
+            .catch(function(error) {
+                console.error("Error fetching weather data:", error);
+            });
+    };
+}]);
